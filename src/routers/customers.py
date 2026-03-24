@@ -1,4 +1,4 @@
-from models import Customer, CustomerCreate, CustomerUpdate
+from models import Customer, CustomerCreate, CustomerUpdate, Transaction
 from db import SessionDep
 
 from fastapi import APIRouter, status, HTTPException, FastAPI
@@ -21,8 +21,13 @@ async def create_customer(customer_data:CustomerCreate, session: SessionDep):
 async def read_customer(customer_id: int, session: SessionDep):
     customer_db = session.get(Customer, customer_id)
     if not customer_id:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Customer doesn't exist")    
-    return customer_db
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Customer doesn't exist")
+    
+    transaction_db = Transaction.model_validate(transaction_data_dict)
+    session.add(transaction_db)
+    session.commit()
+    session.refresh(transaction_db)
+    return transaction_db
 
 
 #ACTUALIZAR
