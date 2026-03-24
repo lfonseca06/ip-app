@@ -2,4 +2,4 @@
 
 Para validar en el entorno de desarrollo
 
-fastapi dev
+fastapi dev src/main.py

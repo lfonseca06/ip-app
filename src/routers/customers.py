@@ -1,13 +1,14 @@
-from fastapi import APIRouter, status, HTTPException
-from sqlmodel import select
-
 from models import Customer, CustomerCreate, CustomerUpdate
 from db import SessionDep
+
+from fastapi import APIRouter, status, HTTPException, FastAPI
+from sqlmodel import select
+
 
 router = APIRouter()
 
 #LEER
-@router.post("/customers", response_model=Customer)
+@router.post("/customers", response_model=Customer, tags=['customers'])
 async def create_customer(customer_data:CustomerCreate, session: SessionDep):
     customer = Customer.model_validate(customer_data.model_dump())
     session.add(customer)
@@ -16,7 +17,7 @@ async def create_customer(customer_data:CustomerCreate, session: SessionDep):
     return customer
 
 #LEER
-@router.get("/customers/{customer_id}", response_model=Customer)
+@router.get("/customers/{customer_id}", response_model=Customer, tags=['customers'])
 async def read_customer(customer_id: int, session: SessionDep):
     customer_db = session.get(Customer, customer_id)
     if not customer_id:
@@ -25,7 +26,7 @@ async def read_customer(customer_id: int, session: SessionDep):
 
 
 #ACTUALIZAR
-@router.patch("/customers/{customer_id}", response_model=Customer, status_code=status.HTTP_201_CREATED)
+@router.patch("/customers/{customer_id}", response_model=Customer, status_code=status.HTTP_201_CREATED, tags=['customers'])
 async def read_customer(customer_id: int, customer_data:CustomerUpdate, session: SessionDep):
     customer_db = session.get(Customer, customer_id)
     if not customer_db:
@@ -38,7 +39,7 @@ async def read_customer(customer_id: int, customer_data:CustomerUpdate, session:
     return customer_db
 
 #ELIMINAR
-@router.delete("/customers/{customer_id}")
+@router.delete("/customers/{customer_id}", tags=['customers'])
 async def delete_customer(customer_id: int, session: SessionDep):
     customer_db = session.get(Customer, customer_id)
     if not customer_id:
@@ -50,6 +51,6 @@ async def delete_customer(customer_id: int, session: SessionDep):
     return {"detail":"Ok"}
 
 #LISTAR
-@router.get("/customers", response_model=list[Customer])
+@router.get("/customers", response_model=list[Customer], tags=['customers'])
 async def list_customer(session: SessionDep):
     return session.exec(select(Customer)).all()

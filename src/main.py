@@ -1,12 +1,11 @@
 import zoneinfo
 from datetime import datetime
-from pydantic import BaseModel
-from db import SessionDep, create_all_tables
-from sqlmodel import select
 
 from fastapi import FastAPI
-from models import Transaction, Invoice
-from routers import customers
+from models import Customer, Transaction, Invoice
+from db import SessionDep, create_all_tables
+from sqlmodel import select
+from .routers import customers
 
 app = FastAPI(lifespan=create_all_tables)
 app.include_router(customers.router)
