@@ -1,5 +1,6 @@
 from sqlmodel import select
-from fastapi import APIRouter, HTTPException, Query
+from fastapi import FastAPI
+from fastapi import APIRouter, HTTPException, Query, status
 
 from db import SessionDep
 from models import Customer, Transaction, TransactionCreate

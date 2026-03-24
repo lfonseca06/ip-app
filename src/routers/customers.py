@@ -34,7 +34,6 @@ async def read_customer(customer_id: int, session: SessionDep):
     session.refresh(transaction_db)
     return transaction_db
 
-
 #ACTUALIZAR
 @router.patch("/customers/{customer_id}", response_model=Customer, status_code=status.HTTP_201_CREATED, tags=['customers'])
 async def read_customer(customer_id: int, customer_data:CustomerUpdate, session: SessionDep):
@@ -85,10 +84,6 @@ async def subscribe_customer_to_plan(customer_id: int, session: SessionDep, plan
     if not customer_db:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
     
-    query = (
-        select(CustomerPlan)
-        .where(CustomerPlan.customer_id==customer_id)
-        .where(CustomerPlan.status==plan_status)
-    )
-    plans=session.exec(query).all()
+    query = (select(CustomerPlan).where(CustomerPlan.customer_id==customer_id).where(CustomerPlan.status==plan_status))
+    plans = session.exec(query).all()
     return plans
